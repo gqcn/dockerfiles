@@ -1,6 +1,6 @@
 # loads/zookeeper:3.4
 # https://github.com/kubernetes/contrib/blob/master/statefulsets/zookeeper/Dockerfile
-FROM ubuntu:16.04
+FROM loads/ubuntu:16.04
 
 ENV ZK_USER=zookeeper \
     ZK_DATA_DIR=/var/lib/zookeeper/data \
