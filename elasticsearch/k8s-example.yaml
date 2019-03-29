@@ -1,0 +1,136 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name     : med3-svr-es
+  namespace: app
+data:
+  elasticsearch.yml: |-
+    cluster.name: med3-svr-es
+    node.name: ${HOSTNAME}
+    path.data: /usr/share/elasticsearch/data
+    network.host: ["0.0.0.0"]
+    discovery.zen.ping.unicast.hosts: ["med3-svr-es-0.med3-svr-es.app.svc.cluster.local:9300", "med3-svr-es-1.med3-svr-es.app.svc.cluster.local:9300"]
+    discovery.zen.minimum_master_nodes: 1
+    thread_pool.bulk.queue_size: 5000
+    bootstrap.system_call_filter: false
+    xpack.security.enabled: false
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name     : med3-svr-es
+  namespace: app
+spec:
+  ports:
+  - port: 9200
+    name: port1
+  - port: 9300
+    name: port2
+  clusterIP: None
+  selector:
+    app: med3-svr-es
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name     : med3-svr-es
+  namespace: app
+spec:
+  replicas: 2
+  serviceName : med3-svr-es
+  selector:
+    matchLabels:
+      app: med3-svr-es
+  template:
+    metadata:
+      labels:
+        app: med3-svr-es
+    spec:
+      imagePullSecrets:
+        - name: regsecret
+      nodeSelector:
+        group   : app
+        nodetype: classiclink
+      volumes:
+      - name: config
+        configMap:
+          name: med3-svr-es
+
+      initContainers:
+      # 系统参数修改
+      - name : "sysctl"
+        image: "busybox"
+        imagePullPolicy: "IfNotPresent"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+
+      # 数据目录权限
+      - name : "chown"
+        image: "docker.elastic.co/elasticsearch/elasticsearch:5.4.3"
+        imagePullPolicy: "IfNotPresent"
+        command:
+        - /bin/bash
+        - -c
+        - chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name      : med3-svr-es-pvc
+          mountPath : /usr/share/elasticsearch/data
+          
+      # ES服务端运行
+      containers:
+      - name : med3-svr-es
+        image: "docker.elastic.co/elasticsearch/elasticsearch:5.4.3"
+        imagePullPolicy: "IfNotPresent"
+        ports:
+          - protocol: TCP
+            containerPort: 9200
+          - protocol: TCP
+            containerPort: 9300
+        readinessProbe:
+            tcpSocket:
+              port: 9200
+            periodSeconds: 10
+            initialDelaySeconds:	10
+        livenessProbe:
+            tcpSocket:
+              port: 9200
+            initialDelaySeconds:	20
+            periodSeconds: 10 
+        volumeMounts:
+        - name      : med3-svr-es-pvc
+          mountPath : /usr/share/elasticsearch/data
+        - mountPath : /usr/share/elasticsearch/config/elasticsearch.yml
+          name      : config
+          subPath   : elasticsearch.yml
+        env:
+          - name : ES_JAVA_OPTS
+            value: "-Xms2g -Xmx2g -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -server -Xss1m -Djava.awt.headless=true -Dfile.encoding=UTF-8 -Djna.nosys=true -Djdk.io.permissionsUseCanonicalPath=true -Dio.netty.noUnsafe=true -Dio.netty.noKeySetOptimization=true -Dio.netty.recycler.maxCapacityPerThread=0 -Dlog4j.shutdownHookEnabled=false -Dlog4j2.disable.jmx=true -Dlog4j.skipJansi=true -XX:+HeapDumpOnOutOfMemoryError"
+        command:
+        - /bin/bash
+        - -c
+        - wget http://files-intra.app.svc.cluster.local/es-plugins/ik-5.4.3.tar.gz && tar -xvf ik-5.4.3.tar.gz -C /usr/share/elasticsearch/plugins/ &&
+          wget http://files-intra.app.svc.cluster.local/es-plugins/pinyin-5.4.3.tar.gz && tar -xvf pinyin-5.4.3.tar.gz -C /usr/share/elasticsearch/plugins/ &&
+          elasticsearch
+        resources:
+          limits:
+            cpu   : 4000m
+            memory: 8000Mi
+          requests:
+            cpu   : 256m
+            memory: 2000Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: med3-svr-es-pvc
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: alicloud-disk-efficiency-hangzhou-b
+      resources:
+        requests:
+          storage: 20Gi
