@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name     : med3-svr-es
+  namespace: app
+data:
+  elasticsearch.yml: |-
+    cluster.name: med3-svr-es
+    node.name: ${HOSTNAME}
+    path.data: /usr/share/elasticsearch/data
+    network.host: ["0.0.0.0"]
+    discovery.zen.ping.unicast.hosts: ["med3-svr-es-0.med3-svr-es.app.svc.cluster.local:9300", "med3-svr-es-1.med3-svr-es.app.svc.cluster.local:9300"]
+    discovery.zen.minimum_master_nodes: 1
+    thread_pool.bulk.queue_size: 5000
+    bootstrap.system_call_filter: false
