@@ -8,7 +8,8 @@ LABEL maintainer="john@johng.cn"
 ###############################################################################
 
 # 使用国内alpine源
-RUN echo http://mirrors.ustc.edu.cn/alpine/v3.8/main/ > /etc/apk/repositories
+# RUN echo http://mirrors.ustc.edu.cn/alpine/v3.8/main/ > /etc/apk/repositories
+RUN echo http://mirrors.aliyun.com/alpine/v3.8/main/ > /etc/apk/repositories
 
 # 设置系统时区 - +8时区
 RUN apk update && apk add tzdata ca-certificates bash
