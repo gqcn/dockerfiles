@@ -9,6 +9,11 @@ LABEL maintainer="john@johng.cn"
 
 RUN apt-get update
 
+# 设置系统时区 - +8时区
+RUN apt-get install -y tzdata ca-certificates bash
+RUN rm -rf /etc/localtime && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN echo "Asia/Shanghai" > /etc/timezone
+
 # 安装mysql, mysqldump
 RUN apt-get install -y mysql-client
 
