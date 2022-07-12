@@ -20,6 +20,14 @@ RUN apt-get install -y mysql-client
 # 安装ssh sshpass
 RUN apt-get install -y sshpass openssh-client
 
+# 安装常用工具
+RUN apt-get install -y vim telnet iputils-ping lsof strace
+
+# 解决vim乱码问题
+RUN echo "set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936" >> /root/.vimrc
+RUN echo "set termencoding=utf-8" >> /root/.vimrc
+RUN echo "set encoding=utf-8" >> /root/.vimrc
+
 # 设置SSH不验证HostKey，防止出现错误：Host key verification failed.
 RUN mkdir /root/.ssh/
 RUN echo "StrictHostKeyChecking no"        >> /root/.ssh/config
