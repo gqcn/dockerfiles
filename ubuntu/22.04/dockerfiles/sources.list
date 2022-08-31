@@ -1,0 +1,15 @@
+deb http://mirrors.tencent.com/ubuntu/ jammy main
+deb-src http://mirrors.tencent.com/ubuntu/ jammy main
+
+deb http://mirrors.tencent.com/ubuntu/ jammy-updates main
+deb-src http://mirrors.tencent.com/ubuntu/ jammy-updates main
+
+deb http://mirrors.tencent.com/ubuntu/ jammy universe
+deb-src http://mirrors.tencent.com/ubuntu/ jammy universe
+deb http://mirrors.tencent.com/ubuntu/ jammy-updates universe
+deb-src http://mirrors.tencent.com/ubuntu/ jammy-updates universe
+
+deb http://mirrors.tencent.com/ubuntu/ jammy-security main
+deb-src http://mirrors.tencent.com/ubuntu/ jammy-security main
+deb http://mirrors.tencent.com/ubuntu/ jammy-security universe
+deb-src http://mirrors.tencent.com/ubuntu/ jammy-security universe
