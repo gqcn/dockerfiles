@@ -19,6 +19,9 @@ RUN echo "Asia/Shanghai" > /etc/timezone
 # 安装mysql, mysqldump
 RUN apt-get install -y mysql-client
 
+# 安装redis
+RUN apt-get install -y redis
+
 # 安装ssh sshpass
 RUN apt-get install -y sshpass openssh-client
 
