@@ -28,6 +28,9 @@ RUN apt-get install -y sshpass openssh-client
 # 安装常用工具
 RUN apt-get install -y vim curl wget telnet iputils-ping lsof strace
 
+# 端口转发工具
+RUN apt-get install -y ncat socat portmap
+
 # 解决vim乱码问题
 RUN echo "set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936" >> /root/.vimrc
 RUN echo "set termencoding=utf-8" >> /root/.vimrc
