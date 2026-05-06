@@ -8,9 +8,6 @@ LABEL maintainer="john@johng.cn"
 #                                INSTALLATION
 ###############################################################################
 
-# 设置安装源
-ADD ./dockerfiles/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources
-
 # 安装基础软件
 RUN apt-get update && apt-get install -y npm
 
