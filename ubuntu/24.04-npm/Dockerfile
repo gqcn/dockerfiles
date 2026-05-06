@@ -1,5 +1,5 @@
 # loads/ubuntu:24.04-npm
-# docker build -t loads/ubuntu:24.04-npm -f Dockerfile .
+# docker buildx build --platform linux/amd64,linux/arm64 -t loads/ubuntu:24.04-npm -f Dockerfile . --push
 FROM loads/ubuntu:24.04-with-ca
 
 LABEL maintainer="john@johng.cn"
