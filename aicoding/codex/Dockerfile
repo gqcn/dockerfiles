@@ -16,6 +16,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get install -y nodejs \
     && npm install -g "@openai/codex@${CODEX_VERSION}" \
+    && npm install -g @fission-ai/openspec@latest \
     && npm cache clean --force \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

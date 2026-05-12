@@ -14,6 +14,7 @@ RUN apt-get update \
         openssh-client \
         ripgrep \
     && npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION} \
+    && npm install -g @fission-ai/openspec@latest \
     && npm cache clean --force \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
