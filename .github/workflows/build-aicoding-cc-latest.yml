@@ -1,4 +1,4 @@
-name: Build aicoding codex latest image
+name: Build aicoding cc latest image
 
 on:
   push:
@@ -6,15 +6,15 @@ on:
       - master
       - main
     paths:
-      - "aicoding/codex/**"
-      - ".github/workflows/build-aicoding-codex-latest.yml"
+      - "aicoding/cc/**"
+      - ".github/workflows/build-aicoding-cc-latest.yml"
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: loads/codex
+  IMAGE_NAME: loads/cc
   IMAGE_TAG: latest
-  DOCKERFILE: aicoding/codex/Dockerfile
-  CONTEXT: aicoding/codex
+  DOCKERFILE: aicoding/cc/Dockerfile
+  CONTEXT: aicoding/cc
 
 permissions:
   contents: read

@@ -18,3 +18,6 @@ RUN apt-get install -y vim wget curl telnet inetutils-ping libnet-ifconfig-wrapp
 
 # 安装 Node.js 和 npm
 RUN apt-get install -y npm
+
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
