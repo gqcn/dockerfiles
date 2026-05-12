@@ -1,4 +1,4 @@
-# loads/aicoding:latest
+# loads/codex:latest
 FROM loads/ubuntu:24.04-npm
 
 LABEL maintainer="john@johng.cn"

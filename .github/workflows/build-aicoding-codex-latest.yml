@@ -1,4 +1,4 @@
-name: Build aicoding latest image
+name: Build aicoding images
 
 on:
   push:
@@ -6,15 +6,10 @@ on:
       - master
       - main
     paths:
-      - "aicoding/latest/**"
-      - ".github/workflows/build-aicoding-latest.yml"
+      - "aicoding/cc/**"
+      - "aicoding/codex/**"
+      - ".github/workflows/build-aicoding-codex-latest.yml"
   workflow_dispatch:
-
-env:
-  IMAGE_NAME: loads/aicoding
-  IMAGE_TAG: latest
-  DOCKERFILE: aicoding/latest/Dockerfile
-  CONTEXT: aicoding/latest
 
 permissions:
   contents: read
@@ -22,6 +17,18 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: loads/cc
+            tag: latest
+            dockerfile: aicoding/cc/Dockerfile
+            context: aicoding/cc
+          - name: loads/codex
+            tag: latest
+            dockerfile: aicoding/codex/Dockerfile
+            context: aicoding/codex
 
     steps:
       - name: Checkout repository
@@ -39,8 +46,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v7
         with:
-          context: ${{ env.CONTEXT }}
-          file: ${{ env.DOCKERFILE }}
+          context: ${{ matrix.image.context }}
+          file: ${{ matrix.image.dockerfile }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          tags: ${{ matrix.image.name }}:${{ matrix.image.tag }}
