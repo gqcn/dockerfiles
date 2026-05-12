@@ -1,4 +1,4 @@
-name: Build ubuntu 24.04 npm image
+name: Build alpine 3.23 image
 
 on:
   push:
@@ -6,15 +6,15 @@ on:
       - master
       - main
     paths:
-      - "ubuntu/24.04-npm/**"
-      - ".github/workflows/build-ubuntu-24.04-npm.yml"
+      - "alpine/3.23/**"
+      - ".github/workflows/build-alpine-3.23.yml"
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: loads/ubuntu
-  IMAGE_TAG: 24.04-npm
-  DOCKERFILE: ubuntu/24.04-npm/Dockerfile
-  CONTEXT: ubuntu/24.04-npm
+  IMAGE_NAME: loads/alpine
+  IMAGE_TAG: "3.23"
+  DOCKERFILE: alpine/3.23/Dockerfile
+  CONTEXT: alpine/3.23
 
 permissions:
   contents: read
