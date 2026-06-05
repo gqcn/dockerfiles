@@ -4,6 +4,8 @@ FROM ubuntu:26.04
 LABEL maintainer="john@johng.cn"
 
 ARG NODE_MAJOR=22
+ARG BUILDARCH
+ARG TARGETARCH
 
 # INSTALLATION
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -56,6 +58,8 @@ RUN set -eux \
     fi \
     && echo "agent ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/agent \
     && chmod 0440 /etc/sudoers.d/agent \
+    && visudo -cf /etc/sudoers.d/agent \
+    && test -u /usr/bin/sudo \
     && mkdir -p /workspace \
     && chown agent:agent /workspace
 
@@ -65,7 +69,12 @@ ENV HOME=/home/agent
 WORKDIR /workspace
 USER agent
 
-RUN sudo -n true
+# QEMU/binfmt cross-builds cannot execute setuid sudo as a non-root user.
+RUN if [ "${BUILDARCH}" = "${TARGETARCH}" ]; then \
+        sudo -n true; \
+    else \
+        test "$(id -u)" = "1000"; \
+    fi
 
 # START
 # CMD ["bash"]
