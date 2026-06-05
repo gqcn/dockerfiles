@@ -32,8 +32,28 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd --gid 1000 agent \
-    && useradd --uid 1000 --gid 1000 --create-home --home-dir /home/agent --shell /bin/bash agent \
+# Ubuntu 26.04 基础镜像可能已预置 UID/GID 1000 的 ubuntu 用户。
+# 这里统一复用或创建 UID/GID 1000，并保证最终运行用户名为 agent。
+# 同时创建 /workspace 工作目录并授权给 agent，供交互式开发和工具执行使用。
+RUN set -eux \
+    && if getent group 1000 >/dev/null; then \
+        existing_group="$(getent group 1000 | cut -d: -f1)"; \
+        if [ "${existing_group}" != "agent" ]; then \
+            groupmod --new-name agent "${existing_group}"; \
+        fi; \
+    else \
+        groupadd --gid 1000 agent; \
+    fi \
+    && if getent passwd 1000 >/dev/null; then \
+        existing_user="$(getent passwd 1000 | cut -d: -f1)"; \
+        if [ "${existing_user}" != "agent" ]; then \
+            usermod --login agent --gid 1000 --home /home/agent --move-home --shell /bin/bash "${existing_user}"; \
+        else \
+            usermod --gid 1000 --home /home/agent --shell /bin/bash agent; \
+        fi; \
+    else \
+        useradd --uid 1000 --gid 1000 --create-home --home-dir /home/agent --shell /bin/bash agent; \
+    fi \
     && echo "agent ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/agent \
     && chmod 0440 /etc/sudoers.d/agent \
     && mkdir -p /workspace \
