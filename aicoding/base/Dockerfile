@@ -22,7 +22,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         sed ripgrep \
         jq yq \
         zip unzip \
-        tmux htop \
+        tmux screen htop \
         shellcheck shfmt \
         fd-find bat fzf gnupg \
     && install -d -m 0755 /etc/apt/keyrings \
