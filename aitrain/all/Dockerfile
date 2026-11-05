@@ -13,6 +13,8 @@ ARG TARGETARCH
 # The packages below are the driver-independent training dev userspace.
 # coreutils-from-gnu replaces uutils env, which rejects "#!/usr/bin/env node"
 # when buildx emulates arm64 and QEMU rewrites /proc/self/exe.
+# Do not install build-essential: it depends on coreutils-from-uutils and
+# would switch env back.
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get install -y --allow-remove-essential coreutils-from-gnu coreutils-from-uutils- \
@@ -32,7 +34,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         shellcheck shfmt \
         fd-find bat fzf gnupg \
         python3 python3-pip python3-venv python3-dev python3-setuptools python3-wheel \
-        build-essential cmake ninja-build pkg-config \
+        gcc g++ make libc6-dev libcrypt-dev cmake ninja-build pkg-config \
         openssh-server \
         rdma-core libibverbs1 ibverbs-providers librdmacm1 \
         infiniband-diags perftest numactl libnuma1 libaio1t64 pciutils pdsh \
