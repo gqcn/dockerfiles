@@ -13,7 +13,8 @@ ARG TARGETARCH
 # the script path, so npm exits with "Requested utility env does not match".
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install -y --no-install-recommends --allow-remove-essential \
+    && apt-get install -y --allow-remove-essential coreutils-from-gnu coreutils-from-uutils- \
+    && apt-get install -y --no-install-recommends \
         ca-certificates sudo \
         procps psmisc iproute2 iputils-ping dnsutils netcat-openbsd \
         libnet-ifconfig-wrapper-perl lsof strace \
@@ -28,7 +29,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         tmux screen htop \
         shellcheck shfmt \
         fd-find bat fzf gnupg \
-        coreutils-from-gnu \
     && install -d -m 0755 /etc/apt/keyrings \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
