@@ -11,9 +11,11 @@ ARG TARGETARCH
 # No NVIDIA driver, CUDA, or PyTorch packages. The host toolkit mounts
 # nvidia-smi and libcuda. CUDA waits until the oldest cluster driver is known.
 # The packages below are the driver-independent training dev userspace.
+# coreutils-from-gnu replaces uutils env, which rejects "#!/usr/bin/env node"
+# when buildx emulates arm64 and QEMU rewrites /proc/self/exe.
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends --allow-remove-essential \
         ca-certificates sudo \
         procps psmisc iproute2 iputils-ping dnsutils netcat-openbsd \
         libnet-ifconfig-wrapper-perl lsof strace \
@@ -28,6 +30,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         tmux screen htop \
         shellcheck shfmt \
         fd-find bat fzf gnupg \
+        coreutils-from-gnu \
         python3 python3-pip python3-venv python3-dev python3-setuptools python3-wheel \
         build-essential cmake ninja-build pkg-config \
         openssh-server \
