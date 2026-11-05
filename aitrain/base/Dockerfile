@@ -1,4 +1,4 @@
-# loads/aiagent:all-26.04
+# loads/aitrain:base-26.04
 FROM ubuntu:26.04
 
 LABEL maintainer="john@johng.cn"
@@ -33,14 +33,5 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && npm cache clean --force \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# 预置安装一些常用AI助手工具
-RUN export HOME=/root \
-    && npm install -g @anthropic-ai/claude-code@latest \
-    && npm install -g "@openai/codex@latest" \
-    && npm install -g "@opencode/cli@latest" \
-    && npm install -g @fission-ai/openspec@latest \
-    && npm cache clean --force
-
 
 

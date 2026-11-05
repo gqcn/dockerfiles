@@ -1,4 +1,4 @@
-name: Build aiagent images
+name: Build aitrain images
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
       - master
       - main
     paths:
-      - "aiagent/base/**"
-      - "aiagent/all/**"
-      - ".github/workflows/build-aiagent-images.yml"
+      - "aitrain/base/**"
+      - "aitrain/all/**"
+      - ".github/workflows/build-aitrain-images.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,14 +21,14 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - name: loads/aiagent
+          - name: loads/aitrain
             tag: base-26.04
-            dockerfile: aiagent/base/Dockerfile
-            context: aiagent/base
-          - name: loads/aiagent
+            dockerfile: aitrain/base/Dockerfile
+            context: aitrain/base
+          - name: loads/aitrain
             tag: all-26.04
-            dockerfile: aiagent/all/Dockerfile
-            context: aiagent/all
+            dockerfile: aitrain/all/Dockerfile
+            context: aitrain/all
 
     steps:
       - name: Checkout repository
