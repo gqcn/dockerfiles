@@ -9,7 +9,7 @@
 - `docker build -t loads/ubuntu:24.04-npm -f ubuntu/24.04-npm/Dockerfile ubuntu/24.04-npm`：本地构建指定镜像。
 - `docker buildx build --platform linux/amd64,linux/arm64 -t loads/ubuntu:24.04-npm -f ubuntu/24.04-npm/Dockerfile ubuntu/24.04-npm --push`：构建并推送多架构镜像。
 - `make up tool=codex`：将当前变更加入暂存区，自动生成提交信息，提交并推送；执行前请确认 diff。
-- `GitHub Actions` 当前只覆盖 `ubuntu/24.04-npm/**`，推送到 `main` 或 `master` 时构建并发布 `loads/ubuntu:24.04-npm`。
+- `GitHub Actions` 在推送到 `main` 或 `master` 且对应路径有变更时，构建并发布多架构镜像。当前覆盖 `loads/ubuntu:24.04-npm`、`loads/alpine:3.23`、`loads/aicoding:base-26.04`（随后发布 `loads/codex:latest`、`loads/claude:latest`）、`loads/aiagent:base-26.04`、`loads/aiagent:all-26.04`。也可通过 `workflow_dispatch` 手动触发。
 
 ## 编码风格与命名约定
 
