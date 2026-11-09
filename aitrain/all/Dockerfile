@@ -4,6 +4,7 @@ FROM ubuntu:26.04
 LABEL maintainer="john@johng.cn"
 
 ARG NODE_MAJOR=22
+ARG KUBECTL_VERSION=v1.37.2
 ARG BUILDARCH
 ARG TARGETARCH
 
@@ -48,6 +49,11 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /run/sshd \
     && rm -f /etc/ssh/ssh_host_*
+
+# kubectl v1.37.2 is the current stable client. Official binaries cover amd64 and arm64.
+RUN curl -fsSL -o /tmp/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
+    && install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl \
+    && rm -f /tmp/kubectl
 
 # CONFIGURATION
 # utility mounts the node-local nvidia-smi. Ubuntu 26.04 Python is externally managed.
