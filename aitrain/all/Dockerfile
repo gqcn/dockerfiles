@@ -5,6 +5,7 @@ LABEL maintainer="john@johng.cn"
 
 ARG NODE_MAJOR=22
 ARG KUBECTL_VERSION=v1.37.2
+ARG CRICTL_VERSION=v1.37.0
 ARG BUILDARCH
 ARG TARGETARCH
 
@@ -54,6 +55,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 RUN curl -fsSL -o /tmp/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
     && install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl \
     && rm -f /tmp/kubectl
+
+# crictl v1.37.0 is the current cri-tools release. Official binaries cover amd64 and arm64.
+RUN curl -fsSL -o /tmp/crictl.tar.gz "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${TARGETARCH}.tar.gz" \
+    && tar -xzf /tmp/crictl.tar.gz -C /tmp crictl \
+    && install -o root -g root -m 0755 /tmp/crictl /usr/local/bin/crictl \
+    && rm -f /tmp/crictl /tmp/crictl.tar.gz
 
 # CONFIGURATION
 # utility mounts the node-local nvidia-smi. Ubuntu 26.04 Python is externally managed.

@@ -4,6 +4,7 @@ FROM ubuntu:26.04
 LABEL maintainer="john@johng.cn"
 
 ARG NODE_MAJOR=22
+ARG CRICTL_VERSION=v1.37.0
 ARG BUILDARCH
 ARG TARGETARCH
 
@@ -37,5 +38,11 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && npm cache clean --force \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# crictl v1.37.0 is the current cri-tools release. Official binaries cover amd64 and arm64.
+RUN curl -fsSL -o /tmp/crictl.tar.gz "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${TARGETARCH}.tar.gz" \
+    && tar -xzf /tmp/crictl.tar.gz -C /tmp crictl \
+    && install -o root -g root -m 0755 /tmp/crictl /usr/local/bin/crictl \
+    && rm -f /tmp/crictl /tmp/crictl.tar.gz
 
 
